@@ -1,8 +1,8 @@
 from wsgiref.simple_server import make_server
-from application.urls import routes, fronts
-from application.model import Application
+from urls import routes, fronts
+from iqw_framework.main import Framework
 
-application = Application(routes, fronts)
+application = Framework(routes, fronts)
 
 if __name__ == "__main__":
     with make_server('', 8000, application) as httpd:

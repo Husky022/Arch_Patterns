@@ -2,7 +2,7 @@ from wsgiref.util import setup_testing_defaults
 import views
 
 
-class Application():
+class Framework():
     def __init__(self, routes, fronts):
         self.routes = routes
         self.fronts = fronts

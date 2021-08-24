@@ -1,4 +1,4 @@
-from templator import render
+from iqw_framework.templator import render
 
 
 def index(request):

@@ -2,6 +2,7 @@ import quopri
 from wsgiref.util import setup_testing_defaults
 import views
 from datetime import datetime
+from patterns import patterns
 
 
 class Framework():
@@ -27,9 +28,25 @@ class Framework():
             #Добавил здесь просто вывод данных в терминал, могу также добавить вывод в файл, если требуется
             print(f'{datetime.now()} - GET запрос, данные запроса - {self.handler_data(environ["QUERY_STRING"])}')
         if method == 'POST':
-            #Также, вывод в терминал
-            data_from_post = self.wsgi_input_data(environ)
-            print(f'{datetime.now()} - POST запрос, данные запроса - {self.data_decoder(data_from_post)}')
+            data_from_post = self.data_decoder(self.wsgi_input_data(environ))
+            if environ['PATH_INFO'] == '/course_redactor.html':
+                if 'new_category' in data_from_post:
+                    new_category = patterns.Engine.create_category(data_from_post['new_category'])
+                    print('добавлена категория')
+                    print(views.site.categories)
+                if 'new_course' in data_from_post:
+                    new_course = patterns.Engine.create_course(data_from_post['format'], data_from_post['new_course'],
+                                                                 data_from_post['category_course'],
+                                                                 data_from_post['address'])
+                    print('добавлен курс')
+                    print(views.site.courses)
+                if 'copy-course' in data_from_post:
+                    pass
+                if 'del-course' in data_from_post:
+                    index_remove = int(data_from_post['del-course'])
+                    del patterns.Engine.courses[index_remove]
+
+            print(f'{datetime.now()} - POST запрос, данные запроса - {data_from_post}')
 
 
         if path in self.routes:

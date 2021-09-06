@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% block title %}IQW{% endblock %}
+{% block style_css %}
+    {% include "style_css.html" %}
+{% endblock %}
+    <div class="content-wrapper">
+    {% block main_menu %}
+        {% include "main_menu.html" %}
+    {% endblock %}
+    {% block content %}
+        <div class="container clearfix">
+            <main class="content">
+                <p style="text-align: center;">Создать категорию</p>
+                <div class="container-create-courses">
+                    <form name="create-category" class="form-create-category" action="" method="POST">
+                        <fieldset>
+                            <label>Название категории:<input type="text" name="new_category"></label>
+                            <label><input type="submit" value="Сохранить"></label>
+                        </fieldset>
+                    </form>
+                    <p style="text-align: center;">Создать курс</p>
+                        <form name="create-course" class="form-create-course" action="" method="POST">
+                            <fieldset>
+                                <label>Название курса:<input id="course-name" type="text" name="new_course"></label>
+                                <label>Категория:
+                                    <select id="course-cat" name="category_course">
+                                         <option> - </option>
+                                        {% for item in category_list %}
+                                            <option> {{item.name}} </option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                                <label>Адрес проведения:<input id="course-address" type="text" name="address"></label>
+                                <p><label>
+                                    <input id="course-type-online" name="format" type="radio" value="online" checked>
+                                </label> Онлайн формат</p>
+                                <p><label>
+                                    <input id="course-type-offline" name="format" type="radio" value="offline">
+                                </label> Оффлайн формат</p>
+                                <input type="submit" value="Добавить курс">
+                            </fieldset>
+                        </form>
+                    <p style="text-align: center;">Доступные курсы</p>
+                    {% if not courses_list %}
+                        <p style="text-align: center; color: red">Курсов нет</p>
+                    {% else %}
+                    <div class="container-course">
+                        <table>
+                            <tr>
+                                <td>Название</td>
+                                <td>Категория</td>
+                                <td>Формат</td>
+                                <td>Адрес</td>
+                                <td>Опции</td>
+                            </tr>
+                            {% for item in courses_list %}
+                            <tr>
+                                <td>{{item.name}}</td>
+                                <td>{{item.category}}</td>
+                                <td>{{item.type}}</td>
+                                <td>{{item.address}}</td>
+                                <td>
+                                    <button type="button"   onclick="document.getElementById('course-name').value = '{{item.name}}_копия';
+                                    document.getElementById('course-address').value = '{{item.address}}';
+                                    document.getElementById('course-cat').value = '{{item.category}}';">Скопировать курс</button>
+                                    <form action="" method="post">
+                                        <button name="del-course" value="{{courses_list.index(item)}}">Удалить курс</button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    {% endif %}
+                    </div>
+                </div>
+            </main>
+        </div>
+    {% endblock %}
+    {% block footer_menu %}
+        {% include "footer_menu.html" %}
+    {% endblock %}
+    </div>

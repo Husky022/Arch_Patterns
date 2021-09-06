@@ -12,7 +12,9 @@ def other_front(request):
 routes = {
     '/': views.index,
     '/contacts/': views.contacts,
-    '/registration/': views.registration
+    '/registration/': views.registration,
+    '/courses/': views.courses,
+    '/course_redactor/': views.course_redactor
 }
 
 fronts = [secret_front, other_front]

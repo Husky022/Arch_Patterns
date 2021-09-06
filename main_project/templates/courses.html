@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}IQW{% endblock %}
+{% block style_css %}
+    {% include "style_css.html" %}
+{% endblock %}
+    <div class="content-wrapper">
+    {% block main_menu %}
+        {% include "main_menu.html" %}
+    {% endblock %}
+    {% block content %}
+        <div class="container clearfix">
+            <main class="content">
+                <p style="text-align: center;">Доступные курсы</p>
+                <div class="container-wrapper-courses">
+                {% if not courses_list %}
+                    <p style="text-align: center; color: red">Курсов нет</p>
+                {% else %}
+                    <div class="container-course">
+                        <table>
+                           <tr>
+                                <td>Название</td>
+                                <td>Категория</td>
+                                <td>Формат</td>
+                                <td>Адрес</td>
+                                <td>Опции</td>
+                            </tr>
+                            {% for item in courses_list %}
+                            <tr>
+                                <td>{{item.name}}</td>
+                                <td>{{item.category}}</td>
+                                <td>{{item.type}}</td>
+                                <td>{{item.address}}</td>
+                                <td>
+                                    <input class="btn-sign-up-{{courses_list.index(item)}}" type="button"
+                                           value="Записаться на курс">
+                                </td>
+                            {% endfor %}
+                        </table>
+                    </div>
+                {% endif %}
+                </div>
+            </main>
+        </div>
+    {% endblock %}
+    {% block footer_menu %}
+        {% include "footer_menu.html" %}
+    {% endblock %}
+    </div>

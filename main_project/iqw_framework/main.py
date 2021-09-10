@@ -2,7 +2,7 @@ import quopri
 from wsgiref.util import setup_testing_defaults
 import views
 from datetime import datetime
-from patterns import patterns
+from patterns import creational_patterns
 
 
 class Framework():
@@ -31,20 +31,20 @@ class Framework():
             data_from_post = self.data_decoder(self.wsgi_input_data(environ))
             if environ['PATH_INFO'] == '/course_redactor.html':
                 if 'new_category' in data_from_post:
-                    new_category = patterns.Engine.create_category(data_from_post['new_category'])
+                    new_category = creational_patterns.Engine.create_category(data_from_post['new_category'])
                     print('добавлена категория')
                     print(views.site.categories)
                 if 'new_course' in data_from_post:
-                    new_course = patterns.Engine.create_course(data_from_post['format'], data_from_post['new_course'],
-                                                                 data_from_post['category_course'],
-                                                                 data_from_post['address'])
+                    new_course = creational_patterns.Engine.create_course(data_from_post['format'], data_from_post['new_course'],
+                                                                          data_from_post['category_course'],
+                                                                          data_from_post['address'])
                     print('добавлен курс')
                     print(views.site.courses)
                 if 'copy-course' in data_from_post:
                     pass
                 if 'del-course' in data_from_post:
                     index_remove = int(data_from_post['del-course'])
-                    del patterns.Engine.courses[index_remove]
+                    del creational_patterns.Engine.courses[index_remove]
 
             print(f'{datetime.now()} - POST запрос, данные запроса - {data_from_post}')
 
@@ -88,3 +88,26 @@ class Framework():
                 result[k] = val_decode_str
         return result
 
+
+class LogFramework(Framework):
+    def __init__(self, environ, start_response):
+        self.application = Framework(environ, start_response)
+        super().__init__(environ, start_response)
+
+    def __call__(self, environ, start_response):
+        print(f'Метод запроса {environ["REQUEST_METHOD"]}')
+        print(f'Данные запроса {environ}')
+        return Framework(environ, start_response)
+
+class FakeFramework(Framework):
+
+    def __init__(self, environ, start_response):
+        self.application = Framework(environ, start_response)
+        super().__init__(environ, start_response)
+
+    def __call__(self, environ, start_response):
+        request = {}
+        view = views.hello_from_fake_view
+        code, body = view(request)
+        start_response(code, [('Content-Type', 'text/html')])
+        return [body.encode('utf-8')]

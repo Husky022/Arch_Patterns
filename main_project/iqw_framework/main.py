@@ -3,6 +3,9 @@ from wsgiref.util import setup_testing_defaults
 import views
 from datetime import datetime
 from patterns import creational_patterns
+from iqw_framework.logger import Logger
+
+logger = Logger('main')
 
 
 class Framework():
@@ -28,24 +31,42 @@ class Framework():
             #Добавил здесь просто вывод данных в терминал, могу также добавить вывод в файл, если требуется
             print(f'{datetime.now()} - GET запрос, данные запроса - {self.handler_data(environ["QUERY_STRING"])}')
         if method == 'POST':
+            print('0')
             data_from_post = self.data_decoder(self.wsgi_input_data(environ))
-            if environ['PATH_INFO'] == '/course_redactor.html':
-                if 'new_category' in data_from_post:
-                    new_category = creational_patterns.Engine.create_category(data_from_post['new_category'])
-                    print('добавлена категория')
-                    print(views.site.categories)
-                if 'new_course' in data_from_post:
-                    new_course = creational_patterns.Engine.create_course(data_from_post['format'], data_from_post['new_course'],
-                                                                          data_from_post['category_course'],
-                                                                          data_from_post['address'])
-                    print('добавлен курс')
-                    print(views.site.courses)
-                if 'copy-course' in data_from_post:
-                    pass
-                if 'del-course' in data_from_post:
-                    index_remove = int(data_from_post['del-course'])
-                    del creational_patterns.Engine.courses[index_remove]
-
+            print(data_from_post)
+            if 'new_category' in data_from_post:
+                print('1')
+                new_category = creational_patterns.Engine.create_category(data_from_post['new_category'])
+                logger.log('добавлена категория')
+                print(views.site.categories)
+            if 'new_course' in data_from_post:
+                print('2')
+                new_course = creational_patterns.Engine.create_course(data_from_post['format'], data_from_post['new_course'],
+                                                                      data_from_post['category_course'],
+                                                                      data_from_post['address'])
+                print('добавлен курс')
+                print(views.site.courses)
+            if 'copy-course' in data_from_post:
+                pass
+            if 'del-course' in data_from_post:
+                print('3')
+                index_remove = int(data_from_post['del-course'])
+                del creational_patterns.Engine.courses[index_remove]
+            if 'new-user' in data_from_post:
+                print('4')
+                new_user = creational_patterns.Engine.create_user(data_from_post['user-type'], data_from_post['new-user'], data_from_post['gender'], data_from_post['date_of_birth'])
+            if 'signing_student' in data_from_post:
+                print('5')
+                for el in creational_patterns.Engine.courses:
+                    if data_from_post['signing_student_course'] == el.name:
+                        if data_from_post['signing_student'] not in el.students:
+                            el.students.append(data_from_post['signing_student'])
+            if 'signing_teacher' in data_from_post:
+                print('6')
+                for el in creational_patterns.Engine.courses:
+                    if data_from_post['signing_teacher_course'] == el.name:
+                        if data_from_post['signing_teacher'] not in el.teachers:
+                            el.teachers.append(data_from_post['signing_teacher'])
             print(f'{datetime.now()} - POST запрос, данные запроса - {data_from_post}')
 
 

@@ -50,6 +50,8 @@
                                 <td>Название</td>
                                 <td>Категория</td>
                                 <td>Формат</td>
+                                <td>Студенты</td>
+                                <td>Преподаватели</td>
                                 <td>Адрес</td>
                                 <td>Опции</td>
                             </tr>
@@ -58,6 +60,14 @@
                                 <td>{{item.name}}</td>
                                 <td>{{item.category}}</td>
                                 <td>{{item.type}}</td>
+                                <td>{% for element in item.students %}
+                                        {{element}}
+                                    {% endfor %}
+                                </td>
+                                <td>{% for element in item.teachers %}
+                                        {{element}}
+                                    {% endfor %}
+                                </td>
                                 <td>{{item.address}}</td>
                                 <td>
                                     <button type="button"   onclick="document.getElementById('course-name').value = '{{item.name}}_копия';

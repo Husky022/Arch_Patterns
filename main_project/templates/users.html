@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+{% block title %}IQW{% endblock %}
+{% block style_css %}
+    {% include "style_css.html" %}
+{% endblock %}
+    <div class="content-wrapper">
+    {% block main_menu %}
+        {% include "main_menu.html" %}
+    {% endblock %}
+    {% block content %}
+        <div class="container clearfix">
+            <main class="content">
+                <p style="text-align: center;">Новый пользователь</p>
+                <div class="container-create-courses">
+                    <form name="create-student" class="form-create-student" action="" method="POST">
+                        <fieldset>
+                            <label>Имя и фамилия:<input type="text" name="new-user"></label>
+                            <label>Тип пользователя:
+                                    <select id="user-type" name="user-type">
+                                         <option value="student"> Студент </option>
+                                         <option value="teacher"> Преподаватель </option>
+                                    </select>
+                            </label>
+                            <label>Пол:
+                                    <select id="user-gender" name="gender">
+                                         <option value="male"> М </option>
+                                         <option value="female"> Ж </option>
+                                    </select>
+                            </label>
+                            <label> Дата рождения<input type="date" name="date_of_birth"></label>
+                        </fieldset>
+                        <input type="submit" value="Сохранить">
+                    </form>
+                    {% if teachers_list %}
+                        <p style="text-align: center;">Назначить преподавателя на курс</p>
+                        <form name="sign_teacher" class="form-sign-teacher" action="" method="POST">
+                            <fieldset>
+                                <label>Преподаватель:
+                                    <select name="signing_teacher">
+                                        {% for item in teachers_list %}
+                                            <option> {{item.name}} </option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                                <label>Назначить на курс:
+                                    <select name="signing_teacher_course">
+                                        {% for item in courses_list %}
+                                            <option> {{item.name}} </option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                                <input type="submit" value="Назначить">
+                            </fieldset>
+                        </form>
+                    {% endif %}
+                    {% if students_list %}
+                        <p style="text-align: center;">Записать студента на курс</p>
+                        <form name="sign_teacher" class="form-sign-teacher" action="" method="POST">
+                            <fieldset>
+                                <label>Студент:
+                                    <select name="signing_student">
+                                        {% for item in students_list %}
+                                            <option> {{item.name}} </option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                                <label>Записать на курс:
+                                    <select name="signing_student_course">
+                                        {% for item in courses_list %}
+                                            <option> {{item.name}} </option>
+                                        {% endfor %}
+                                    </select>
+                                </label>
+                                <input type="submit" value="Записать">
+                            </fieldset>
+                        </form>
+                    {% endif %}
+                    <p style="text-align: center;">Список всех студентов</p>
+                    {% if not students_list %}
+                        <p style="text-align: center; color: #ff0000">Студентов нет</p>
+                    {% else %}
+                    <div class="container-course">
+                        <table>
+                            <tr>
+                                <td>Имя, Фамилия</td>
+                                <td>Пол</td>
+                                <td>Дата рождения</td>
+                                <td>Изучает курсы</td>
+                            </tr>
+                            {% for item in students_list %}
+                            <tr>
+                                <td>{{item.name}}</td>
+                                <td>{{item.gender}}</td>
+                                <td>{{item.birthday}}</td>
+                                <td>{% for element in courses_list %}
+                                        {% if item.name in element.students %}
+                                            {{element.name}}({{element.category}})
+                                        {% endif %}
+                                    {% endfor %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </table>
+                    </div>
+                    {% endif %}
+                    <p style="text-align: center;">Список преподавателей</p>
+                    {% if not teachers_list %}
+                        <p style="text-align: center; color: #ff0000">Преподавателей нет</p>
+                    {% else %}
+                        <div class="container-course">
+                            <table>
+                                <tr>
+                                    <td>Имя, Фамилия</td>
+                                    <td>Пол</td>
+                                    <td>Дата рождения</td>
+                                    <td>Преподает курсы</td>
+                                </tr>
+                                {% for item in teachers_list %}
+                                <tr>
+                                    <td>{{item.name}}</td>
+                                    <td>{{item.gender}}</td>
+                                    <td>{{item.birthday}}</td>
+                                    <td>{% for element in courses_list %}
+                                            {% if item.name in element.teachers %}
+                                                {{element.name}}({{element.category}})
+                                            {% endif %}
+                                        {% endfor %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </table>
+                        </div>
+                    {% endif %}
+                    </div>
+            </main>
+        </div>
+    {% endblock %}
+    {% block footer_menu %}
+        {% include "footer_menu.html" %}
+    {% endblock %}
+    </div>

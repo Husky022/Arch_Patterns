@@ -2,6 +2,7 @@ from iqw_framework.templator import render
 from iqw_framework import logger
 from patterns.creational_patterns import Engine
 from patterns.structural_patterns import AppRoute, Debug
+from patterns.behavioral_patterns import Api
 
 site = Engine()
 logger = logger.Logger('main')
@@ -38,6 +39,12 @@ def course_redactor(request):
     print(request)
     return '200 OK', render('course_redactor.html', category_list=site.categories, courses_list=site.courses)
 
+@AppRoute(routes=routes, url='/users/')
+@Debug(name='users')
+def users(request):
+    print(request)
+    return '200 OK', render('users.html', category_list=site.categories, courses_list=site.courses, students_list=site.students, teachers_list=site.teachers)
+
 def not_found_404_view(request):
     print(request)
     return '404 WHAT', '404 PAGE Not Found'
@@ -45,3 +52,8 @@ def not_found_404_view(request):
 def hello_from_fake_view(request):
     print(request)
     return '200 WHAT', 'Hello from Fake'
+
+@AppRoute(routes=routes, url='/api_course/')
+def api_site(request):
+    print(request)
+    return '200 OK', Api(Engine.courses).convert_to_json()

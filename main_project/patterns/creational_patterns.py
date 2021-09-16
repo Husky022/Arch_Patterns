@@ -1,4 +1,8 @@
 import copy
+from patterns.behavioral_patterns import Subject, Notifier
+
+observable = Subject()
+notifier = Notifier()
 
 class Prototype:
 
@@ -19,7 +23,11 @@ class Course(Prototype):
         self.category = category
         self.address = address
         self.lessons = []
+        self.teachers = []
+        self.students = []
         Engine.courses.append(self)
+        observable.notify(self.name)
+
 
 class OfflineCourse(Course):
     def __init__(self, name, category, address):
@@ -42,17 +50,25 @@ class CourseFactory:
         return cls.types[type](name, category, address)
 
 
-class User:
+class User(Notifier):
     def __init__(self, name, gender, birthday):
+        super().__init__()
         self.name = name
         self.gender = gender
         self.birthday = birthday
 
 class Student(User):
-    pass
+    def __init__(self, name, gender, birthday):
+        super().__init__(name, gender, birthday)
+        Engine.students.append(self)
+        observable.attach(self)
+        print(f'список студентов - {Engine.students}')
 
 class Teacher(User):
-    pass
+    def __init__(self, name, gender, birthday):
+        super().__init__(name, gender, birthday)
+        Engine.teachers.append(self)
+        print(f'список преподов - {Engine.teachers}')
 
 class UserFactory:
     types = {
@@ -65,9 +81,10 @@ class UserFactory:
         return cls.types[type](name, gender, birthday)
 
 
-class Engine:
-    students = []
+class Engine():
+
     teachers = []
+    students = []
     courses = []
     categories = []
 

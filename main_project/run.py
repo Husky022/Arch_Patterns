@@ -3,7 +3,7 @@ from urls import fronts
 from views import routes
 from iqw_framework.main import Framework, LogFramework, FakeFramework
 
-application = FakeFramework(routes, fronts)
+application = Framework(routes, fronts)
 
 if __name__ == "__main__":
     with make_server('', 8000, application) as httpd:

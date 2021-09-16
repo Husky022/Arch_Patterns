@@ -32,9 +32,7 @@ class Api:
         object_list = []
         result = {}
         for item in self.object:
-                dict_item = {}
-                for el in item.__dict__.keys():
-                    dict_item[el] = item.__dict__[el]
+                dict_item = {property: item.__dict__[property] for property in item.__dict__.keys()}
                 object_list.append(dict_item)
         result[f'Доступные курсы на {datetime.today().strftime("%d.%m.%Y")}'] = object_list
         return json.dumps(result, ensure_ascii=False, sort_keys=True, indent=4)

@@ -5,7 +5,9 @@ from iqw_framework.main import Framework, LogFramework, FakeFramework
 
 application = Framework(routes, fronts)
 
+port = 8000
+
 if __name__ == "__main__":
-    with make_server('', 8000, application) as httpd:
-        print("Server is running on port 8000...")
+    with make_server('', port, application) as httpd:
+        print(f"Server is running on port {port}...")
         httpd.serve_forever ()

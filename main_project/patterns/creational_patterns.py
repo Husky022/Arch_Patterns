@@ -1,8 +1,26 @@
 import copy
 from patterns.behavioral_patterns import Subject, Notifier
 
-observable = Subject()
-notifier = Notifier()
+
+class Engine():
+    def __init__(self):
+        self.teachers = []
+        self.students = []
+        self.courses = []
+        self.categories = []
+
+    @staticmethod
+    def create_user(type, name, gender, birthday):
+        return UserFactory.create_user(type, name, gender, birthday)
+
+    @staticmethod
+    def create_category(name):
+        return Category(name)
+
+    @staticmethod
+    def create_course(type, name, category, address):
+        return CourseFactory.create_course(type, name, category, address)
+
 
 class Prototype:
 
@@ -13,7 +31,7 @@ class Category:
 
     def __init__(self, name):
         self.name = name
-        Engine.categories.append(self)
+        site.categories.append(self)
 
 
 class Course(Prototype):
@@ -25,7 +43,7 @@ class Course(Prototype):
         self.lessons = []
         self.teachers = []
         self.students = []
-        Engine.courses.append(self)
+        site.courses.append(self)
         observable.notify(self.name)
 
 
@@ -60,15 +78,15 @@ class User(Notifier):
 class Student(User):
     def __init__(self, name, gender, birthday):
         super().__init__(name, gender, birthday)
-        Engine.students.append(self)
+        site.students.append(self)
         observable.attach(self)
-        print(f'список студентов - {Engine.students}')
+        print(f'список студентов - {site.students}')
 
 class Teacher(User):
     def __init__(self, name, gender, birthday):
         super().__init__(name, gender, birthday)
-        Engine.teachers.append(self)
-        print(f'список преподов - {Engine.teachers}')
+        site.teachers.append(self)
+        print(f'список преподов - {site.teachers}')
 
 class UserFactory:
     types = {
@@ -81,22 +99,6 @@ class UserFactory:
         return cls.types[type](name, gender, birthday)
 
 
-class Engine():
-
-    teachers = []
-    students = []
-    courses = []
-    categories = []
-
-    @staticmethod
-    def create_user(type, name, gender, birthday):
-        return UserFactory.create_user(type, name, gender, birthday)
-
-    @staticmethod
-    def create_category(name):
-        return Category(name)
-
-    @staticmethod
-    def create_course(type, name, category, address):
-        return CourseFactory.create_course(type, name, category, address)
-
+site = Engine()
+observable = Subject()
+notifier = Notifier()

@@ -1,10 +1,10 @@
 from iqw_framework.templator import render
 from iqw_framework import logger
-from patterns.creational_patterns import Engine
+from patterns.creational_patterns import site
 from patterns.structural_patterns import AppRoute, Debug
 from patterns.behavioral_patterns import Api
 
-site = Engine()
+
 logger = logger.Logger('main')
 
 routes = {}
@@ -56,4 +56,4 @@ def hello_from_fake_view(request):
 @AppRoute(routes=routes, url='/api_course/')
 def api_site(request):
     print(request)
-    return '200 OK', Api(Engine.courses).convert_to_json()
+    return '200 OK', Api(site.courses).convert_to_json()

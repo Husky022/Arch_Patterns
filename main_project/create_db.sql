@@ -1,0 +1,50 @@
+
+PRAGMA foreign_keys = off;
+BEGIN TRANSACTION;
+
+DROP TABLE IF EXISTS students;
+CREATE TABLE students
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR (32),
+    gender CHAR (1),
+    birthday DATE
+);
+
+DROP TABLE IF EXISTS teachers;
+CREATE TABLE teachers
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR (32),
+    gender CHAR (1),
+    birthday DATE
+);
+
+DROP TABLE IF EXISTS categories;
+CREATE TABLE categories
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR (32)
+);
+
+DROP TABLE IF EXISTS courses;
+CREATE TABLE courses
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR (32),
+    category VARCHAR (32),
+    address VARCHAR (64),
+    lessons TEXT,
+    teachers TEXT,
+    students TEXT
+);
+
+DROP TABLE IF EXISTS observable;
+CREATE TABLE observable
+(
+    id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL UNIQUE,
+    name VARCHAR (32)
+);
+
+COMMIT TRANSACTION;
+PRAGMA foreign_keys = on;

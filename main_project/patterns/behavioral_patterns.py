@@ -4,6 +4,8 @@ import json
 
 
 # паттерн для Логера - Стратегия
+from patterns.architectural_patterns import DomainObject
+
 
 class LogToConsole:
 
@@ -54,15 +56,7 @@ class Notifier(Observer):
         print(f'Отправлено SMS пользователю {user_name}: Добавлен курс {course_name} ')
         print(f'Отправлено письмо по email пользователю {user_name}: Добавлен курс {course_name} ')
 
+class Observable:
 
-class Subject:
-
-   def __init__(self):
-       self.observers = []
-
-   def attach(self, observer):
-       self.observers.append(observer)
-
-   def notify(self, name):
-       for observer in self.observers:
-           observer.update(name, observer.name)
+   def notify(self, name, observer):
+       observer.update(name, observer.name)

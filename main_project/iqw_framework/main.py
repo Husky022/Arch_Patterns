@@ -2,9 +2,15 @@ import quopri
 from wsgiref.util import setup_testing_defaults
 import views
 from datetime import datetime
-from patterns.creational_patterns import site
-from iqw_framework.logger import Logger
 
+
+from patterns.creational_patterns import site, CourseMapper, connection, MapperRegistry, observable, StudentMapper
+from iqw_framework.logger import Logger
+from patterns.architectural_patterns import UnitOfWork
+
+
+UnitOfWork.new_current()
+UnitOfWork.get_current().set_mapper_registry(MapperRegistry)
 logger = Logger('main')
 
 
@@ -33,38 +39,46 @@ class Framework():
             #Добавил здесь просто вывод данных в терминал, могу также добавить вывод в файл, если требуется
             print(f'{datetime.now()} - GET запрос, данные запроса - {self.handler_data(environ["QUERY_STRING"])}')
         if method == 'POST':
-            print('0')
             data_from_post = self.data_decoder(self.wsgi_input_data(environ))
-            print(data_from_post)
             if 'new_category' in data_from_post:
                 new_category = site.create_category(data_from_post['new_category'])
-                logger.log('добавлена категория')
-                print(views.site.categories)
+                logger.log(f'добавлена категория {data_from_post["new_category"]}')
+                new_category.mark_new()
             if 'new_course' in data_from_post:
                 new_course = site.create_course(data_from_post['format'], data_from_post['new_course'],
                                                                       data_from_post['category_course'],
                                                                       data_from_post['address'])
-                print('добавлен курс')
-                print(views.site.courses)
+                logger.log(f'добавлен новый курс {new_course.name}({new_course.category})')
+                new_course.mark_new()
+                users_to_notify_mapper = StudentMapper(connection)
+                users_to_notify = users_to_notify_mapper.all()
+                for user in users_to_notify:
+                    observable.notify(new_course.name, user)
             if 'copy-course' in data_from_post:
                 pass
             if 'del-course' in data_from_post:
-                index_remove = int(data_from_post['del-course'])
-                del site.courses[index_remove]
+                course_mapper = CourseMapper(connection)
+                course_remove = course_mapper.find_by_id(data_from_post['del-course'])
+                logger.log(f'удален курс {course_remove.name}, ID - {course_remove.id}')
+                course_remove.mark_removed()
             if 'new-user' in data_from_post:
                 new_user = site.create_user(data_from_post['user-type'], data_from_post['new-user'], data_from_post['gender'], data_from_post['date_of_birth'])
+                logger.log(f'добавлен пользователь {data_from_post["new-user"]}({data_from_post["user-type"]})')
+                new_user.mark_new()
             if 'signing_student' in data_from_post:
-                for course in site.courses:
-                    if data_from_post['signing_student_course'] == course.name:
-                        if data_from_post['signing_student'] not in course.students:
-                            course.students.append(data_from_post['signing_student'])
+                pass
+                # for course in site.courses:
+                #     if data_from_post['signing_student_course'] == course.name:
+                #         if data_from_post['signing_student'] not in course.students:
+                #             course.students.append(data_from_post['signing_student'])
             if 'signing_teacher' in data_from_post:
-                print('6')
-                for course in site.courses:
-                    if data_from_post['signing_teacher_course'] == course.name:
-                        if data_from_post['signing_teacher'] not in course.teachers:
-                            course.teachers.append(data_from_post['signing_teacher'])
+                pass
+                # for course in site.courses:
+                #     if data_from_post['signing_teacher_course'] == course.name:
+                #         if data_from_post['signing_teacher'] not in course.teachers:
+                #             course.teachers.append(data_from_post['signing_teacher'])
             print(f'{datetime.now()} - POST запрос, данные запроса - {data_from_post}')
+            UnitOfWork.get_current().commit()
 #### Проблемный кусок кода (конец)
 
         if path in self.routes:

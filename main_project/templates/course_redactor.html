@@ -47,6 +47,7 @@
                     <div class="container-course">
                         <table>
                             <tr>
+                                <td>ID</td>
                                 <td>Название</td>
                                 <td>Категория</td>
                                 <td>Формат</td>
@@ -57,6 +58,7 @@
                             </tr>
                             {% for item in courses_list %}
                             <tr>
+                                <td>{{item.id}}</td>
                                 <td>{{item.name}}</td>
                                 <td>{{item.category}}</td>
                                 <td>{{item.type}}</td>
@@ -74,7 +76,7 @@
                                     document.getElementById('course-address').value = '{{item.address}}';
                                     document.getElementById('course-cat').value = '{{item.category}}';">Скопировать курс</button>
                                     <form action="" method="post">
-                                        <button name="del-course" value="{{courses_list.index(item)}}">Удалить курс</button>
+                                        <button name="del-course" value="{{item.id}}">Удалить курс</button>
                                     </form>
                                 </td>
                             </tr>
